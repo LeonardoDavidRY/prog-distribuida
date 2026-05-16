@@ -3,16 +3,22 @@ package com.programacion.distribuida.books.db;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name = "inventory")
-@Getter
-@Setter
+@Table(name = "inventories")
+@Getter @Setter
+@ToString
+@EqualsAndHashCode(exclude = "book")
 public class Inventory {
     @Id
-    @Column(name = "book_isbn")
-    private String bookIsbn;
-    private Integer supplied;
+    @OneToOne
+    @JoinColumn(name = "book_isbn")
+    @ToString.Exclude
+    private Book book;
+
     private Integer sold;
+    private Integer supplied;
     private Integer version;
 }

@@ -6,37 +6,28 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.util.List;
 
-@Path("/inventory")
+@Path("/inventories")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class InventoryRest {
 
-  @Inject
-  InventoryRepository inventoryRepository;
+    @Inject
+    InventoryRepository inventoryRepository;
 
-  @Inject
-  @ConfigProperty(name = "quarkus.http.port")
-  Integer httpPort;
+    @GET
+    public List<Inventory> obtenerTodos() {
+        return inventoryRepository.listAll();
+    }
 
-  @GET
-  public List<Inventory> findAll() {
-    return inventoryRepository.listAll();
-  }
-
-  @GET
-  @Path("/{bookIsbn}")
-  public Response getByBookIsbn(@PathParam("bookIsbn") String bookIsbn) {
-    return inventoryRepository.findByIdOptional(bookIsbn)
-            .map(it -> {
-              it.setBookIsbn(it.getBookIsbn() + " - Puerto: " + httpPort);
-              return it;
-            })
-            .map(Response::ok)
-            .orElse(Response.status(Response.Status.NOT_FOUND))
-            .build();
-  }
+    @GET
+    @Path("/{isbn}")
+    public Response obtenerPorId(@PathParam("isbn") String isbn) {
+        return inventoryRepository.findByIdOptional(isbn)
+                .map(Response::ok)
+                .orElse(Response.status(Response.Status.NOT_FOUND))
+                .build();
+    }
 }

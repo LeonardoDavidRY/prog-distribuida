@@ -5,7 +5,7 @@ CREATE TABLE lineitem (
     quantity     INTEGER,
     CONSTRAINT pk_lineitem PRIMARY KEY (order_id, book_isbn),
     CONSTRAINT fk_lineitem_order FOREIGN KEY (order_id) REFERENCES purchaseorder(id),
-    CONSTRAINT fk_lineitem_book FOREIGN KEY (book_isbn) REFERENCES book(isbn)
+    CONSTRAINT fk_lineitem_book FOREIGN KEY (book_isbn) REFERENCES books(isbn)
 );
 
 INSERT INTO lineitem (order_id, book_isbn, quantity, idx) VALUES (1, '978-0-7432-7356-5', 2, 0);

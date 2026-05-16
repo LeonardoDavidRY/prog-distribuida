@@ -20,7 +20,7 @@ java {
 
 dependencies {
     implementation(enforcedPlatform("io.quarkus.platform:quarkus-bom:$quarkusVersion"))
-//rest
+    // REST
     implementation("io.quarkus:quarkus-rest")
     implementation("io.quarkus:quarkus-rest-jsonb")
     implementation("io.quarkus:quarkus-hibernate-orm")
@@ -29,8 +29,16 @@ dependencies {
     implementation("io.quarkus:quarkus-flyway")
     runtimeOnly("org.flywaydb:flyway-database-postgresql:12.5.0")
 
-//cdi
+    // CDI
     implementation("io.quarkus:quarkus-arc")
+
+    // REST Client for calling other microservices
+    implementation("io.quarkus:quarkus-rest-client")
+    implementation("io.quarkus:quarkus-rest-client-jsonb")
+    
+    testImplementation(platform("org.junit:junit-bom:6.0.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 
