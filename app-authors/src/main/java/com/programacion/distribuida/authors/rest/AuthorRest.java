@@ -32,7 +32,7 @@ public class AuthorRest {
   @Path("/{id}")
   public Response getById(@PathParam("id") Integer id) {
     return authorRepository.findByIdOptional(id)
-            .map(it ->{
+            .map(it -> {
               it.setName(it.getName() + " - " + httpPort);
               return it;
             })
@@ -41,15 +41,19 @@ public class AuthorRest {
             .build();
   }
 
+
   @GET
   @Path("/find/{isbn}")
   public List<AuthorDto> findByBook(@PathParam("isbn") String isbn) {
+
     return authorRepository.findByBook(isbn)
             .stream()
+            .peek(it -> it.setName(it.getName() + " - " + httpPort))
             .map(it -> AuthorDto.builder()
                     .id(it.getId())
                     .name(it.getName())
                     .build())
             .toList();
   }
+
 }

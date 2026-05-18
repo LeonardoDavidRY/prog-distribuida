@@ -30,10 +30,14 @@ dependencies {
     // REST Client for calling other microservices
     implementation("io.quarkus:quarkus-rest-client")
     implementation("io.quarkus:quarkus-rest-client-jsonb")
-    
-    testImplementation(platform("org.junit:junit-bom:6.0.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    //--Service Discovery
+    implementation("io.quarkus:quarkus-smallrye-stork")
+    implementation("io.smallrye.stork:stork-service-discovery-static-list")
+
+
+    //implementation("org.modelmapper:modelmapper:3.2.6")
+
 }
 
 tasks.test {
