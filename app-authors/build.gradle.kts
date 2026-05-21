@@ -35,10 +35,12 @@ dependencies {
     // REST Client for calling other microservices
     implementation("io.quarkus:quarkus-rest-client")
     implementation("io.quarkus:quarkus-rest-client-jsonb")
-    
-    testImplementation(platform("org.junit:junit-bom:6.0.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    //Discovery
+    implementation("io.quarkus:quarkus-smallrye-stork")
+//    implementation("io.smallrye.stork:stork-service-discovery-consul:2.6.3")
+    implementation("io.smallrye.reactive:smallrye-mutiny-vertx-consul-client") //conectarse con consul
+
 }
 
 
