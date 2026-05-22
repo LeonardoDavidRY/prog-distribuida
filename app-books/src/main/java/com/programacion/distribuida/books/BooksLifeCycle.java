@@ -3,6 +3,7 @@ package com.programacion.distribuida.books;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 import io.vertx.core.Vertx;
+import io.vertx.ext.consul.CheckOptions;
 import io.vertx.ext.consul.ConsulClient;
 import io.vertx.ext.consul.ConsulClientOptions;
 import io.vertx.ext.consul.ServiceOptions;
@@ -42,11 +43,19 @@ public class BooksLifeCycle {
 
             serviceId = "app-books-%s:%d".formatted(ipAddress, appPort);
 
+            var urlCheck="http://%s:%d/ping".formatted(ipAddress, appPort);
+
+            CheckOptions checkOptions = new CheckOptions()
+                    .setHttp(urlCheck)
+                    .setInterval("10s")
+                    .setDeregisterAfter("10s");
+
             ServiceOptions serviceOptions = new ServiceOptions()
                     .setName("app-books")
                     .setId(serviceId)
                     .setAddress(ipAddress)
-                    .setPort(appPort);
+                    .setPort(appPort)
+                    .setCheckOptions(checkOptions);
 
             client.registerService(serviceOptions)
                     .onSuccess(it -> System.out.println("Books service registered in Consul with ID: " + serviceId))

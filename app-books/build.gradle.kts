@@ -33,9 +33,11 @@ dependencies {
 
     //--Service Discovery
     implementation("io.quarkus:quarkus-smallrye-stork")
-    implementation("io.smallrye.stork:stork-service-discovery-static-list")
+//    implementation("io.smallrye.stork:stork-service-discovery-static-list")
 //    implementation("io.smallrye.stork:stork-service-discovery-consul:2.6.3")
     implementation("io.smallrye.reactive:smallrye-mutiny-vertx-consul-client")
+    implementation("io.smallrye.stork:stork-service-discovery-consul")
+
 
     //implementation("org.modelmapper:modelmapper:3.2.6")
 
