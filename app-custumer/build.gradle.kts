@@ -17,11 +17,16 @@ repositories {
     mavenCentral()
 }
 
-extra["springCloudVersion"] = "2025.1.1"
+// Versión correcta de Spring Cloud para Spring Boot 4.x
+extra["springCloudVersion"] = "2026.0.0-M1" // O la versión estable compatible con Boot 4.x
 
 dependencies {
+    // Agregada la dependencia Web necesaria para @RestController y @GetMapping
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
     implementation("org.springframework.cloud:spring-cloud-starter-consul-config")
     implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
