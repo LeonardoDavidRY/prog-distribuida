@@ -2,41 +2,41 @@ package com.programacion.distribuida.customers.rest;
 
 import com.programacion.distribuida.customers.db.Customer;
 import com.programacion.distribuida.customers.repo.CustomerRepository;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Path("/customers")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@RestController
+@RequestMapping("/customers")
 public class CustomerRest {
 
-  @Inject
-  CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
-  @Inject
-  @ConfigProperty(name = "quarkus.http.port")
-  Integer httpPort;
+    @Value("${server.port}")
+    private Integer httpPort;
 
-  @GET
-  public List<Customer> findAll() {
-    return customerRepository.listAll();
-  }
+    public CustomerRest(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
-  @GET
-  @Path("/{id}")
-  public Response getById(@PathParam("id") Long id) {
-    return customerRepository.findByIdOptional(id)
-            .map(it -> {
-              it.setName(it.getName() + " - Puerto: " + httpPort);
-              return it;
-            })
-            .map(Response::ok)
-            .orElse(Response.status(Response.Status.NOT_FOUND))
-            .build();
-  }
+    @GetMapping
+    public List<Customer> findAll() {
+        return customerRepository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Customer> getById(@PathVariable("id") Long id) {
+        return customerRepository.findById(id)
+                .map(it -> {
+                    it.setName(it.getName() + " - Puerto: " + httpPort);
+                    return it;
+                })
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

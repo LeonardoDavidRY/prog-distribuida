@@ -182,3 +182,88 @@
     border-right-color: var(--border);
   }
 }
+
+.app {
+  padding: 24px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #1f2937;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-header h1 {
+  margin: 0 0 16px;
+  font-size: 24px;
+}
+
+.panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #ffffff;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.btn {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #1d4ed8;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  border: 1px solid #e5e7eb;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.table th {
+  background: #f3f4f6;
+}
+
+.empty {
+  text-align: center;
+  color: #6b7280;
+}
+
+@media (max-width: 640px) {
+  .app {
+    padding: 20px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+}

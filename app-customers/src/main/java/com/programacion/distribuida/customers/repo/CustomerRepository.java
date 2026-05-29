@@ -1,11 +1,7 @@
 package com.programacion.distribuida.customers.repo;
 
 import com.programacion.distribuida.customers.db.Customer;
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@ApplicationScoped
-@Transactional
-public class CustomerRepository implements PanacheRepositoryBase<Customer, Long> {
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
 }

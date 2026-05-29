@@ -40,45 +40,75 @@ function App() {
 
 
   return (
-      <>
-        <section id="center">
-          <div>
-            <h1>Get started</h1>
-            <p>
-              Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-            </p>
+      <main className="app">
+        <header className="app-header">
+          <h1>Catalogo</h1>
+        </header>
+
+        <section className="panel">
+          <div className="panel-header">
+            <h2>Authors</h2>
+            <button className="btn" onClick={handleListarAutores}>Consultar</button>
           </div>
 
-          <button onClick={handleListarAutores}>Consultar</button>
-
-          <br />
-          {/* 4. Renderizamos dinámicamente la lista guardada en el estado */}
-          {
-            authors.map((author: Author) => (
-                <p key={author.id}>{author.id} - {author.name}</p>
-            ))
-          }
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                </tr>
+              </thead>
+              <tbody>
+                {authors.length === 0 ? (
+                    <tr>
+                      <td colSpan={2} className="empty">Sin resultados</td>
+                    </tr>
+                ) : (
+                    authors.map((author: Author) => (
+                        <tr key={author.id}>
+                          <td>{author.id}</td>
+                          <td>{author.name}</td>
+                        </tr>
+                    ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </section>
-        <div className="ticks"></div>
-        <section id="spacer"></section>
-        <br />
 
-        <section id="center">
-          <div>
+        <section className="panel">
+          <div className="panel-header">
             <h2>Books</h2>
+            <button className="btn" onClick={handleListarLibros}>Consultar</button>
           </div>
 
-          <button onClick={handleListarLibros}>Consultar</button>
-
-          <br />
-          {
-            books.map((author: Book) => (
-                <p key={author.isbn}>{author.isbn} - {author.title}</p>
-            ))
-          }
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>ISBN</th>
+                  <th>Titulo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {books.length === 0 ? (
+                    <tr>
+                      <td colSpan={2} className="empty">Sin resultados</td>
+                    </tr>
+                ) : (
+                    books.map((book: Book) => (
+                        <tr key={book.isbn}>
+                          <td>{book.isbn}</td>
+                          <td>{book.title}</td>
+                        </tr>
+                    ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </section>
-
-      </>
+      </main>
   );
 }
 

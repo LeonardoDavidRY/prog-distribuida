@@ -2,41 +2,41 @@ package com.programacion.distribuida.customers.rest;
 
 import com.programacion.distribuida.customers.db.PurchaseOrder;
 import com.programacion.distribuida.customers.repo.PurchaseOrderRepository;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Path("/purchaseorders")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@RestController
+@RequestMapping("/purchaseorders")
 public class PurchaseOrderRest {
 
-  @Inject
-  PurchaseOrderRepository purchaseOrderRepository;
+    private final PurchaseOrderRepository purchaseOrderRepository;
 
-  @Inject
-  @ConfigProperty(name = "quarkus.http.port")
-  Integer httpPort;
+    @Value("${server.port}")
+    private Integer httpPort;
 
-  @GET
-  public List<PurchaseOrder> findAll() {
-    return purchaseOrderRepository.listAll();
-  }
+    public PurchaseOrderRest(PurchaseOrderRepository purchaseOrderRepository) {
+        this.purchaseOrderRepository = purchaseOrderRepository;
+    }
 
-  @GET
-  @Path("/{id}")
-  public Response getById(@PathParam("id") Long id) {
-    return purchaseOrderRepository.findByIdOptional(id)
-            .map(it -> {
-              it.setTotal(it.getTotal() + httpPort);
-              return it;
-            })
-            .map(Response::ok)
-            .orElse(Response.status(Response.Status.NOT_FOUND))
-            .build();
-  }
+    @GetMapping
+    public List<PurchaseOrder> findAll() {
+        return purchaseOrderRepository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PurchaseOrder> getById(@PathVariable("id") Long id) {
+        return purchaseOrderRepository.findById(id)
+                .map(it -> {
+                    it.setTotal(it.getTotal() + httpPort);
+                    return it;
+                })
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

@@ -3,7 +3,6 @@ package com.programacion.distribuida.customers.db;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "lineitem")
@@ -21,11 +20,4 @@ public class LineItem {
     
     private Integer quantity;
     private Integer idx;
-}
-
-@Getter
-@Setter
-class LineItemId implements Serializable {
-    private Long orderId;
-    private String bookIsbn;
 }
