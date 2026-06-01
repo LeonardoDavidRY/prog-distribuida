@@ -8,11 +8,19 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/books20262026
     username: postgres
-    password: root
+    password: labcom,2015
   cloud:
     consul:
       host: localhost
       port: 8500
+    discovery:
+      tags:
+        - framework=springboot-4.0.0
+        - traefik.enable=true
+        - traefik.http.routers.router-app-customers.rule=PathPrefix(`/app-customers`)
+        - traefik.http.routers.router-app-customers.middlewares=middleware-customers
+        - traefik.http.middlewares.middleware-customers.stripprefix.prefixes=/app-customers
+
 
 management:
   endpoints:

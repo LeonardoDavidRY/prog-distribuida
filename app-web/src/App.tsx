@@ -11,7 +11,7 @@ interface Book {
   isbn: string;
   price: number;
   title: string;
-  author: Array<Author>;
+  authors: Array<Author>;
 }
 
 function App() {
@@ -89,6 +89,7 @@ function App() {
                 <tr>
                   <th>ISBN</th>
                   <th>Titulo</th>
+                  <th>Autores</th>
                 </tr>
               </thead>
               <tbody>
@@ -101,6 +102,7 @@ function App() {
                         <tr key={book.isbn}>
                           <td>{book.isbn}</td>
                           <td>{book.title}</td>
+                          <td>{book.authors.map(author =>author.name)}</td>
                         </tr>
                     ))
                 )}
