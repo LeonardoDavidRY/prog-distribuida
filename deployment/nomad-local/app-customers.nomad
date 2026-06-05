@@ -3,14 +3,18 @@ job "book-store" {
 
   group "servers" {
 
-    count=1
+    count = 4
+
+    network {
+      port "http" {}
+    }
 
     task "app-customers" {
       driver = "java"
 
       config {
-        jar_path    = "C:\tools\distri\prog-distribuida\app-customers\build\libs\app-customers-0.0.1-SNAPSHOT.jar"
-        jvm_options = ["-Xmx2048m", "-Xms256m"]
+        jar_path = "C:/distribuida 2626/app-customers-0.0.1-SNAPSHOT.jar"
+        jvm_options = ["-Xmx1024m", "-Xms128m"]
       }
       env {
         SERVER_PORT = "${NOMAD_PORT_http}"
@@ -19,8 +23,7 @@ job "book-store" {
       service {
         provider = "nomad"
         name     = "app-customers"
-      }
-
+        port     = "http"
       }
     }
   }
