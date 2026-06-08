@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/app-books/src/main/docker/Dockerfile.jvm">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/app-books/src/main/docker/Dockerfile.jvm" />
+              <option name="originalContent" value="#docker build -f src/main/docker/Dockerfile.jvm -t app-books .&#10;#docker build -f src/main/docker/Dockerfile.jvm -t leonardodavidry/app-books .&#10;FROM docker.io/eclipse-temurin:25.0.3_9-jre-alpine&#10;&#10;ENV LANGUAGE='en_US:en'&#10;&#10;RUN mkdir /app&#10;WORKDIR /app&#10;&#10;COPY build/quarkus-app/lib ./lib&#10;COPY build/quarkus-app/quarkus ./quarkus&#10;COPY build/quarkus-app/app ./app&#10;COPY build/quarkus-app/quarkus-run.jar ./&#10;&#10;#imagen con capaz: Si importa el orden porque tiene el codigo del proyecto, el codigo del proyecto se ejecuta antes que el codigo de las dependencias, si el orden es al reves, el codigo de las dependencias se ejecuta antes que el codigo del proyecto, lo que puede causar errores si el codigo del proyecto depende de las dependencias.&#10;#La primera capa no necesita reconstruir&#10;&#10;CMD [&quot;java&quot;, &quot;-jar&quot;, &quot;app.jar&quot;]&#10;" />
+              <option name="updatedContent" value="#docker build -f src/main/docker/Dockerfile.jvm -t app-books .&#10;#docker build -f src/main/docker/Dockerfile.jvm -t leonardodavidry/app-books .&#10;FROM docker.io/eclipse-temurin:25.0.3_9-jre-alpine&#10;&#10;ENV LANGUAGE='en_US:en'&#10;&#10;RUN mkdir /app&#10;WORKDIR /app&#10;&#10;COPY build/quarkus-app/lib ./lib&#10;COPY build/quarkus-app/quarkus ./quarkus&#10;COPY build/quarkus-app/app ./app&#10;COPY build/quarkus-app/quarkus-run.jar ./app.jar&#10;&#10;#imagen con capaz: Si importa el orden porque tiene el codigo del proyecto, el codigo del proyecto se ejecuta antes que el codigo de las dependencias, si el orden es al reves, el codigo de las dependencias se ejecuta antes que el codigo del proyecto, lo que puede causar errores si el codigo del proyecto depende de las dependencias.&#10;#La primera capa no necesita reconstruir&#10;&#10;CMD [&quot;java&quot;, &quot;-jar&quot;, &quot;app.jar&quot;]&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
