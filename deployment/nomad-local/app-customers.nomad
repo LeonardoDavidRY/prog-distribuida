@@ -12,12 +12,23 @@ job "book-store" {
     task "app-customers" {
       driver = "java"
 
+      artifacts {
+        source {
+          source = "file:///C:/distribuida%202626/app-customers-0.0.1-SNAPSHOT.jar"
+          destination = "local/"
+          mode = "any"
+        }
+      }
+
       config {
-        jar_path = "C:/distribuida 2626/app-customers-0.0.1-SNAPSHOT.jar"
+        command = "java"
+        #jar_path    = "c:/distribuida20262026/app-customers-0.0.1-SNAPSHOT.jar"
+        jar_path    = "local/app-customers-0.0.1-SNAPSHOT.jar"
         jvm_options = ["-Xmx1024m", "-Xms128m"]
       }
       env {
         SERVER_PORT = "${NOMAD_PORT_http}"
+        SPRING_CLOUD_CONSUL_HOST = "192.168.73.20"
       }
 
       service {
