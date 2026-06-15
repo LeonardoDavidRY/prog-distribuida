@@ -40,6 +40,8 @@ dependencies {
 
 
     //implementation("org.modelmapper:modelmapper:3.2.6")
+    implementation("io.quarkus:quarkus-smallrye-fault-tolerance")
+
 
 }
 
