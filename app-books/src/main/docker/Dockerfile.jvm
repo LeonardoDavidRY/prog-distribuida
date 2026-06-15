@@ -10,7 +10,7 @@ WORKDIR /app
 COPY build/quarkus-app/lib ./lib
 COPY build/quarkus-app/quarkus ./quarkus
 COPY build/quarkus-app/app ./app
-COPY build/quarkus-app/quarkus-run.jar ./
+COPY build/quarkus-app/quarkus-run.jar ./app.jar
 
 #imagen con capaz: Si importa el orden porque tiene el codigo del proyecto, el codigo del proyecto se ejecuta antes que el codigo de las dependencias, si el orden es al reves, el codigo de las dependencias se ejecuta antes que el codigo del proyecto, lo que puede causar errores si el codigo del proyecto depende de las dependencias.
 #La primera capa no necesita reconstruir
