@@ -1,23 +1,19 @@
 server:
-  # Nomad inyectará el puerto asignado dinámicamente aquí
-  port: ${SERVER_PORT:8090}
-
+  port: 8090
 spring:
-  config:
-    import: "optional:consul:"
   application:
     name: app-customers
+  config:
+    import: "optional:consul:"
   datasource:
-    # CONFIGURADO: Apunta a la IP de la máquina virtual de PostgreSQL (192.168.73.30)
-    url: jdbc:postgresql://192.168.73.30:5432/books20262026
+    url: jdbc:postgresql://localhost:5432/books20262026
     username: postgres
-    password: labcom,2015
+    password: 'labcom,2015'
+    driver-class-name: org.postgresql.Driver
   cloud:
     consul:
-      # CONFIGURADO: Toma la IP de Consul inyectada por Nomad, por defecto usa la IP de tu VM Consul
-      host: ${SPRING_CLOUD_CONSUL_HOST:192.168.73.20}
+      host: localhost
       port: 8500
-      # CORRECCIÓN: 'discovery' anidado correctamente dentro de 'consul'
       discovery:
         tags:
           - framework=springboot-4.0.6
@@ -25,9 +21,3 @@ spring:
           - traefik.http.routers.router-app-customers.rule=PathPrefix(`/app-customers`)
           - traefik.http.routers.router-app-customers.middlewares=middleware-customers
           - traefik.http.middlewares.middleware-customers.stripprefix.prefixes=/app-customers
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
