@@ -1,5 +1,5 @@
 global:
-  scrape_interval: 5s
+  scrape_interval:     5s
   evaluation_interval: 5s
 
 scrape_configs:
@@ -7,12 +7,9 @@ scrape_configs:
     scrape_interval: 10s
     metrics_path: /q/metrics
     static_configs:
-      # sirve para el escaneo de la maquina que se necesitan las metricas
-      - targets: [ 'authors-app:8070' ]
-
+      - targets: ['authors:8080']
   - job_name: books-app
     scrape_interval: 10s
     metrics_path: /q/metrics
     static_configs:
-      # sirve para el escaneo de las metricas de la aplicacion de libros
-      - targets: [ 'books-app:8080' ]
+      - targets: [ 'books:8080' ]
