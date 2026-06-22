@@ -41,6 +41,9 @@ dependencies {
 //    implementation("io.smallrye.stork:stork-service-discovery-consul:2.6.3")
     implementation("io.smallrye.reactive:smallrye-mutiny-vertx-consul-client") //conectarse con consul
 
+    //Prometheus - este no tiene dependencia con ninguna entidad
+    implementation("io.quarkus:quarkus-micrometer-registry-prometheus")
+
 }
 
 

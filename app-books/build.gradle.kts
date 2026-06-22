@@ -42,6 +42,9 @@ dependencies {
     //implementation("org.modelmapper:modelmapper:3.2.6")
     implementation("io.quarkus:quarkus-smallrye-fault-tolerance")
 
+    //Prometheus - este no tiene dependencia con ninguna entidad
+    implementation("io.quarkus:quarkus-micrometer-registry-prometheus")
+
 
 }
 
