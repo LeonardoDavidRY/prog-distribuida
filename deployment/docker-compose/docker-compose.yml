@@ -86,10 +86,10 @@ services:
   web:
     build:
       context: ../../app-web
-      dockerfile: Dockerfile
-    container_name: app-web
+      dockerfile: Dockerfile.jvm
+    container_name: web-app
     ports:
-      - "8081:80"      # expone el nginx del contenedor en localhost:8081
+      - "80:80"
     depends_on:
       - authors
       - books
