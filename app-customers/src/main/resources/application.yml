@@ -11,7 +11,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/books20262026
     username: postgres
-    password: 'root'
+    password: 'labcom,2015'
     driver-class-name: org.postgresql.Driver
 
   cloud:

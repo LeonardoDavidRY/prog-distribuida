@@ -31,8 +31,13 @@ services:
     volumes:
       - ./configs:/etc/prometheus
     ports:
-      - 9090:9090
+     - 9090:9090
     restart: unless-stopped
+
+  graphana:
+    image: grafana/grafana-oss:latest
+    ports:
+      - 3000:3000
 
   authors:
     build:
@@ -47,7 +52,7 @@ services:
       QUARKUS_HOST: consul
       CONSUL_PORT: 8500
     ports:
-      - 8070:8080
+      - 8072:8080
     expose:
       - 8080
     restart: unless-stopped
