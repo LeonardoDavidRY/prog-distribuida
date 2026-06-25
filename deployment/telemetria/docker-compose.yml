@@ -34,8 +34,8 @@ services:
      - 9090:9090
     restart: unless-stopped
 
-  graphana:
-    image: grafana/grafana-oss:latest
+  grafana:
+    image: grafana/grafana
     ports:
       - 3000:3000
 
