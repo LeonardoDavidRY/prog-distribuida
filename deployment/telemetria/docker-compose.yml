@@ -9,8 +9,8 @@ services:
       POSTGRES_DB: books20262026
     volumes:
       - "c:/distribuida2626/db:/var/lib/postgresql/data"
-#    ports:
-#      - 54321:5432
+    ports:
+      - 54321:5432
 #    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -54,16 +54,16 @@ services:
       QUARKUS_DATASOURCE_USERNAME: postgres
       QUARKUS_DATASOURCE_PASSWORD: labcom,2015
       QUARKUS_HTTP_PORT: 8080
-      QUARKUS_HOST: consul
+      CONSUL_HOST: consul
       CONSUL_PORT: 8500
-#    ports:
-#      - 8072:8080
+    ports:
+      - 8072:8080
     expose:
       - 8080
 #    restart: unless-stopped
-#    depends_on:
-#      - db-server
-#      - consul
+    depends_on:
+      - db-server
+      - consul
 
   books:
     build:
@@ -75,16 +75,16 @@ services:
       QUARKUS_DATASOURCE_USERNAME: postgres
       QUARKUS_DATASOURCE_PASSWORD: labcom,2015
       QUARKUS_HTTP_PORT: 8080
-      QUARKUS_HOST: consul
-      QUARKUS_PORT: 8500
-#    ports:
-#      - 8071:8080
+      CONSUL_HOST:  consul
+      CONSUL_PORT: 8500
+    ports:
+      - 8071:8080
     expose:
       - 8080
 #    restart: unless-stopped
-#    depends_on:
-#      - db-server
-#      - consul
+    depends_on:
+      - db-server
+      - consul
 
   customers:
     build:
@@ -97,12 +97,12 @@ services:
       SPRING_DATASOURCE_PASSWORD: labcom,2015
       SPRING_CLOUD_CONSUL_HOST: consul
       SPRING_CLOUD_CONSUL_PORT: 8500
-#    ports:
-#      - 8091:8090
+    ports:
+      - 8091:8090
 #    restart: unless-stopped
-#    depends_on:
-#      - db-server
-#      - consul
+    depends_on:
+      - db-server
+      - consul
   proxy:
     image: traefik:3.7.5
     command: |

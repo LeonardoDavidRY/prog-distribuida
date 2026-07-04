@@ -31,8 +31,8 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    
-    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+
+    implementation("io.micrometer:micrometer-registry-prometheus")
 }
 
 dependencyManagement {

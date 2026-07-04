@@ -11,20 +11,38 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/books20262026
     username: postgres
-    password: 'labcom,2015'
+    password: labcom,2015
     driver-class-name: org.postgresql.Driver
 
   cloud:
     consul:
-      enabled: false
+      host: ${SPRING_CLOUD_CONSUL_HOST:localhost}
+      port: ${SPRING_CLOUD_CONSUL_PORT:8500}
+      enabled: true
+
       discovery:
-        enabled: false
+        enabled: true
+        register: true
+
+        tags:
+          - traefik.enable=true
+          - traefik.http.routers.router-app-customers.rule=PathPrefix(`/app-customers`)
+          - traefik.http.routers.router-app-customers.middlewares=middleware-customers
+          - traefik.http.middlewares.middleware-customers.stripprefix.prefixes=/app-customers
 
 management:
   endpoints:
     web:
       exposure:
         include: health,info,prometheus
+
   endpoint:
+    health:
+      show-details: always
     prometheus:
       enabled: true
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true
