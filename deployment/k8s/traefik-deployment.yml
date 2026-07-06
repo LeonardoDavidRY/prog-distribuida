@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik-proxy
+  labels:
+    app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      containers:
+        - name: traefik
+          image: traefik:3.7.5
+          args:
+            - "--api.insecure=true"
+            - "--api.dashboard=true"
+            - "--entryPoints.metrics.address=:8082"
+            - "--entryPoints.http.address=:80"
+            - "--entryPoints.traefik.address=:8080"
+            - "--providers.consulCatalog=true"
+            - "--providers.consulCatalog.endpoint.address=consul-service:8500" # Conexión interna K8s
+            - "--providers.consulCatalog.exposedByDefault=false"
+            - "--providers.consulCatalog.refreshInterval=5s"
+            - "--metrics.prometheus=true"
+            - "--metrics.prometheus.entryPoint=metrics"
+          ports:
+            - containerPort: 8080
+              name: traefik-ui
+            - containerPort: 80
+              name: http
+            - containerPort: 8082
+              name: metrics
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-service
+spec:
+  type: NodePort # Permite acceder desde tu máquina local (Windows)
+  selector:
+    app: traefik
+  ports:
+    - name: web
+      port: 80
+      targetPort: 80
+      nodePort: 30080 # Accede a tus apps vía http://<minikube-ip>:30080
+    - name: dashboard
+      port: 8080
+      targetPort: 8080
+      nodePort: 30088 # Accede al Dashboard vía http://<minikube-ip>:30088
+    - name: metrics
+      port: 8082
+      targetPort: 8082
+      nodePort: 30082 # Métricas para Prometheus
