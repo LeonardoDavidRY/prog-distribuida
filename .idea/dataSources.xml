@@ -25,5 +25,20 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="postgres PostgreSQL" uuid="39160b35-0c0c-4b70-820b-7084c74c0938">
+      <driver-ref>postgresql</driver-ref>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5433/books-db</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="com.intellij.clouds.kubernetes.db.host.port" value="5433" />
+        <property name="com.intellij.clouds.kubernetes.db.enabled" value="true" />
+        <property name="com.intellij.clouds.kubernetes.db.resource" value="postgres" />
+        <property name="com.intellij.clouds.kubernetes.db.context" value="minikube" />
+        <property name="com.intellij.clouds.kubernetes.db.resource.type" value="Deployment" />
+        <property name="com.intellij.clouds.kubernetes.db.namespace" value="default" />
+        <property name="com.intellij.clouds.kubernetes.db.container.port" value="5432" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

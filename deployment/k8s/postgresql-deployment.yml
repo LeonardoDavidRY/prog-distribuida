@@ -9,12 +9,13 @@ spec:
     requests:
       storage: 1Gi
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: postgres
@@ -25,7 +26,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:17.10-alpine3.24
+          image: postgres:17.7-alpine3.23
           ports:
             - containerPort: 5432
           env:
@@ -34,7 +35,7 @@ spec:
             - name: POSTGRES_PASSWORD
               value: "labcom,2015"
             - name: POSTGRES_DB
-              value: "books20262026"
+              value: "books-db"
             - name: "PGDATA"
               value: "/var/lib/postgresql/data/pgdata"
           volumeMounts:
@@ -45,7 +46,6 @@ spec:
         - name: postgres-data
           persistentVolumeClaim:
             claimName: postgres-pvc
-
 ---
 apiVersion: v1
 kind: Service

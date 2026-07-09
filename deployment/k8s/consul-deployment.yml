@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: consul
-  labels:
-    app: consul
 spec:
   replicas: 1
   selector:
@@ -17,32 +15,42 @@ spec:
       containers:
         - name: consul
           image: consul:1.15.4
+          command: ["/bin/sh", "-c"]
           args:
-            - "agent"
-            - "-dev"
-            - "-ui"
-            - "-bind=0.0.0.0"
-            - "-client=0.0.0.0"
+            - |
+              exec consul agent \
+                -dev \
+                -client=0.0.0.0 \
+                -bind=0.0.0.0 \
+                -ui
           ports:
             - containerPort: 8500
               name: http
           resources:
             requests:
-              cpu: "100m"
               memory: "128Mi"
+              cpu: "100m"
             limits:
-              cpu: "300m"
               memory: "256Mi"
+              cpu: "300m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: consul-service
+  name: consul
+  labels:
+    app: consul
 spec:
   type: ClusterIP
-  selector:
-    app: consul
   ports:
     - name: http
       port: 8500
       targetPort: 8500
+  #    - name: dns
+  #      port: 8600
+  #      targetPort: 8600
+  #    - name: rpc
+  #      port: 8400
+  #      targetPort: 8400
+  selector:
+    app: consul

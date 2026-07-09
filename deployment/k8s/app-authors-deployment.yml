@@ -14,32 +14,28 @@ spec:
     spec:
       containers:
         - name: app-authors
-          image: leonardodavidry/app-authors
+          image: leonardodavidry/app-authors:latest
           ports:
             - containerPort: 8080
           env:
             - name: QUARKUS_DATASOURCE_JDBC_URL
-              value: "jdbc:postgresql://db-server:5432/books20262026"
+              value: "jdbc:postgresql://postgres:5432/books-db"
             - name: QUARKUS_DATASOURCE_USERNAME
               value: "postgres"
             - name: QUARKUS_DATASOURCE_PASSWORD
               value: "labcom,2015"
             - name: QUARKUS_HTTP_PORT
               value: "8080"
-            - name: CONSUL_PORT
-              value: "8500"
             - name: CONSUL_HOST
               value: "consul"
+            - name: CONSUL_PORT
+              value: "8500"
             - name: QUARKUS_FLYWAY_MIGRATE_AT_START
               value: "true"
-            - name: QUARKUS_FLYWAY_ACTIVE
-              value: "true"
-            # ---- RECURSOS DE CPU Y MEMORIA ----
           resources:
             requests:
-              memory: "512Mi"   # Memoria mínima garantizada para Quarkus
-              cpu: "500m"       # Equivalente a 0.25 vCPU (suficiente para iniciar)
-
+              memory: "512Mi"
+              cpu: "500m"
 ---
 apiVersion: v1
 kind: Service
