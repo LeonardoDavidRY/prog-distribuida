@@ -60,3 +60,15 @@ management:
     metrics:
       export:
         enabled: true
+
+  # Tracing (Micrometer Tracing -> OpenTelemetry -> OTLP), the Spring Boot
+  # equivalent of MicroProfile Telemetry used in the Quarkus modules.
+  tracing:
+    sampling:
+      # Spring Boot only samples 10% of requests by default; trace everything.
+      probability: 1.0
+  otlp:
+    tracing:
+      # HTTP OTLP endpoint of the tracing backend (Jaeger). Overridden by
+      # MANAGEMENT_OTLP_TRACING_ENDPOINT in docker-compose.
+      endpoint: http://localhost:4318/v1/traces

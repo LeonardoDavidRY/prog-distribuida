@@ -32,6 +32,15 @@ services:
       retries: 10
       start_period: 5s
 
+  jaeger:
+    image: jaegertracing/all-in-one:1.65.0
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - 16686:16686 # Jaeger UI
+      - 4317:4317   # OTLP gRPC receiver (used by authors/books)
+      - 4318:4318   # OTLP HTTP receiver (used by customers)
+
   proxy:
     image: traefik:3.7.5
     command:
@@ -60,13 +69,10 @@ services:
       QUARKUS_HTTP_PORT: 8080
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
+      QUARKUS_OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
     expose:
       - 8080
     healthcheck:
-      # /q/health/ready (not /live): downstream services need to know that
-      # authors can actually reach the DB before they depend on it. Liveness
-      # alone would report "healthy" as soon as the JVM boots, even if the
-      # DB connection is still failing.
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/q/health/ready"]
       interval: 10s
       timeout: 3s
@@ -77,6 +83,8 @@ services:
         condition: service_healthy
       consul:
         condition: service_healthy
+      jaeger:
+        condition: service_started
 
   books:
     build:
@@ -92,6 +100,7 @@ services:
       CONSUL_PORT: 8500
       QUARKUS_REST_CLIENT_AUTHOR_REST_CLIENT_TIMEOUT: "5000"
       QUARKUS_REST_CLIENT_AUTHOR_REST_CLIENT_CONNECT_TIMEOUT: "3000"
+      QUARKUS_OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4317
     expose:
       - 8080
     healthcheck:
@@ -107,6 +116,8 @@ services:
         condition: service_healthy
       authors:
         condition: service_healthy
+      jaeger:
+        condition: service_started
 
   customers:
     build:
@@ -120,16 +131,13 @@ services:
       SPRING_DATASOURCE_PASSWORD: "labcom,2015"
       SPRING_CLOUD_CONSUL_HOST: consul
       SPRING_CLOUD_CONSUL_PORT: 8500
+      MANAGEMENT_TRACING_SAMPLING_PROBABILITY: "1.0"
+      MANAGEMENT_OTLP_TRACING_ENDPOINT: http://jaeger:4318/v1/traces
     ports:
       - 8090:8080
     expose:
       - 8080
     healthcheck:
-      # /actuator/health/readiness (not /liveness): same reasoning as authors
-      # above — this needs management.endpoint.health.probes.enabled=true in
-      # application.yml, otherwise both paths 404 and this container never
-      # reports healthy, which blocks "web" from starting (its depends_on
-      # requires customers: condition: service_healthy).
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/actuator/health/readiness"]
       interval: 10s
       timeout: 3s
@@ -140,6 +148,8 @@ services:
         condition: service_healthy
       consul:
         condition: service_healthy
+      jaeger:
+        condition: service_started
 
   web:
     build:

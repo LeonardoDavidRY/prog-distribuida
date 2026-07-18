@@ -47,6 +47,9 @@ dependencies {
     //MicroProfile Health
     implementation("io.quarkus:quarkus-smallrye-health")
 
+    //MicroProfile Telemetry - Tracing (OpenTelemetry)
+    implementation("io.quarkus:quarkus-opentelemetry")
+
 }
 
 

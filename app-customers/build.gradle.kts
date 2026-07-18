@@ -33,6 +33,12 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     implementation("io.micrometer:micrometer-registry-prometheus")
+
+    //MicroProfile-Telemetry-equivalent tracing: Micrometer Tracing bridged to OpenTelemetry, exported via OTLP
+    implementation("io.micrometer:micrometer-tracing-bridge-otel")
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp")
+    // Required for the @NewSpan / @SpanTag annotations (AOP proxying)
+    implementation("org.springframework.boot:spring-boot-starter-aop")
 }
 
 dependencyManagement {

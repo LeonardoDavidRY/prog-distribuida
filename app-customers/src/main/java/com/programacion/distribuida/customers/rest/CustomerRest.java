@@ -2,6 +2,8 @@ package com.programacion.distribuida.customers.rest;
 
 import com.programacion.distribuida.customers.db.Customer;
 import com.programacion.distribuida.customers.repo.CustomerRepository;
+import io.micrometer.tracing.annotation.NewSpan;
+import io.micrometer.tracing.annotation.SpanTag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +32,8 @@ public class CustomerRest {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getById(@PathVariable("id") Long id) {
+    @NewSpan("customer-lookup")
+    public ResponseEntity<Customer> getById(@SpanTag("customer.id") @PathVariable("id") Long id) {
         return customerRepository.findById(id)
                 .map(it -> {
                     it.setName(it.getName() + " - Puerto: " + httpPort);

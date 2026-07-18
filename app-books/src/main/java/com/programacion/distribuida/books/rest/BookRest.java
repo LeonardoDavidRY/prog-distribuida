@@ -4,6 +4,9 @@ import com.programacion.distribuida.books.clients.AuthorRestClient;
 import com.programacion.distribuida.books.db.Book;
 import com.programacion.distribuida.books.dtos.BookDto;
 import com.programacion.distribuida.books.repo.BookRepository;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.instrumentation.annotations.SpanAttribute;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -71,10 +74,14 @@ public class BookRest {
 
     @GET
     @Path("/{isbn}")
-    public Response findByIsbn(@PathParam("isbn") String isbn) {
+    @WithSpan("BookRest.findByIsbn")
+    public Response findByIsbn(@SpanAttribute("isbn") @PathParam("isbn") String isbn) {
 
         return bookRepository.findByIdOptional(isbn)
                 .map(book -> {
+                    // Enrich the current span with a business attribute, on top of
+                    // whatever the automatic REST/JDBC instrumentation already records.
+                    Span.current().setAttribute("book.title", book.getTitle());
                     try {
 //                        AuthorRestClient client =  RestClientBuilder.newBuilder()
 //                                .baseUri("http://127.0.0.1:8070")

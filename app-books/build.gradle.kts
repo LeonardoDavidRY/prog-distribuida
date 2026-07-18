@@ -48,6 +48,9 @@ dependencies {
     //MicroProfile Health
     implementation("io.quarkus:quarkus-smallrye-health")
 
+    //MicroProfile Telemetry - Tracing (OpenTelemetry)
+    implementation("io.quarkus:quarkus-opentelemetry")
+
     //Kubernetes
     implementation("io.quarkus:quarkus-kubernetes")
     implementation("io.quarkus:quarkus-container-image-jib")

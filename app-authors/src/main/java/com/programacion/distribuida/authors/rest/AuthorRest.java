@@ -3,6 +3,8 @@ package com.programacion.distribuida.authors.rest;
 import com.programacion.distribuida.authors.db.Author;
 import com.programacion.distribuida.authors.dtos.AuthorDto;
 import com.programacion.distribuida.authors.repo.AuthorRepository;
+import io.opentelemetry.instrumentation.annotations.SpanAttribute;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -52,7 +54,8 @@ public class AuthorRest {
 
     @GET
     @Path("/find/{isbn}")
-    public List<AuthorDto> findByBook(@PathParam("isbn") String isbn) {
+    @WithSpan("AuthorRest.findByBook")
+    public List<AuthorDto> findByBook(@SpanAttribute("isbn") @PathParam("isbn") String isbn) {
         int valor = index.getAndIncrement();
         if (valor % 5 != 0) {
             String msg = String.format("Intento %d, generando error", valor);
