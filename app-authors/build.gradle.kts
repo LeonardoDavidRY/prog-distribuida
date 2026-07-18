@@ -44,6 +44,9 @@ dependencies {
     //Prometheus - este no tiene dependencia con ninguna entidad
     implementation("io.quarkus:quarkus-micrometer-registry-prometheus")
 
+    //MicroProfile Health
+    implementation("io.quarkus:quarkus-smallrye-health")
+
 }
 
 

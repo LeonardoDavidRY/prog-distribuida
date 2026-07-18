@@ -6,32 +6,47 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: labcom,2015
       POSTGRES_DB: books20262026
-    #    volumes:
-    #     - "c:/tools/distri/db:/var/lib/postgresql/data"
     ports:
-      - 54321:5432
+      - 127.0.0.1:55432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+
   consul:
     image: consul:1.13.4
-    command: |
-      agent -dev
-      -ui
-      -bind 0.0.0.0
-      -client 0.0.0.0
+    command:
+      - agent
+      - -dev
+      - -ui
+      - -bind=0.0.0.0
+      - -client=0.0.0.0
     ports:
       - 8500:8500
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8500/ui/"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
   proxy:
     image: traefik:3.7.5
-    command: |
-      --api.insecure=true
-      --api.dashboard=true
-      --providers.consulCatalog
-      --providers.consulCatalog.endpoint.address=consul:8500
-      --providers.consulCatalog.exposeByDefault=false
-      --providers.consulCatalog.refreshInterval=5s
+    command:
+      - --api.insecure=true
+      - --api.dashboard=true
+      - --providers.consulCatalog
+      - --providers.consulCatalog.endpoint.address=consul:8500
+      - --providers.consulCatalog.exposedByDefault=false
+      - --providers.consulCatalog.refreshInterval=5s
     ports:
       - 8888:8080
       - 8080:80
-
+    depends_on:
+      consul:
+        condition: service_healthy
 
   authors:
     build:
@@ -45,11 +60,24 @@ services:
       QUARKUS_HTTP_PORT: 8080
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
-    # ports:
-    #   - 8070:8070
+    expose:
+      - 8080
+    healthcheck:
+      # /q/health/ready (not /live): downstream services need to know that
+      # authors can actually reach the DB before they depend on it. Liveness
+      # alone would report "healthy" as soon as the JVM boots, even if the
+      # DB connection is still failing.
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/q/health/ready"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
     depends_on:
-      - db-server
-      - consul
+      db-server:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+
   books:
     build:
       context: ../../app-books
@@ -62,12 +90,24 @@ services:
       QUARKUS_HTTP_PORT: 8080
       CONSUL_HOST: consul
       CONSUL_PORT: 8500
-    #    ports:
-    #      - 8070:8070
+      QUARKUS_REST_CLIENT_AUTHOR_REST_CLIENT_TIMEOUT: "5000"
+      QUARKUS_REST_CLIENT_AUTHOR_REST_CLIENT_CONNECT_TIMEOUT: "3000"
+    expose:
+      - 8080
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/q/health/ready"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 45s
     depends_on:
-      - db-server
-      - consul
-      - authors
+      db-server:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+      authors:
+        condition: service_healthy
+
   customers:
     build:
       context: ../../app-customers
@@ -80,11 +120,27 @@ services:
       SPRING_DATASOURCE_PASSWORD: "labcom,2015"
       SPRING_CLOUD_CONSUL_HOST: consul
       SPRING_CLOUD_CONSUL_PORT: 8500
-    # ports:
-    #   - 8070:8070
+    ports:
+      - 8090:8080
+    expose:
+      - 8080
+    healthcheck:
+      # /actuator/health/readiness (not /liveness): same reasoning as authors
+      # above — this needs management.endpoint.health.probes.enabled=true in
+      # application.yml, otherwise both paths 404 and this container never
+      # reports healthy, which blocks "web" from starting (its depends_on
+      # requires customers: condition: service_healthy).
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/actuator/health/readiness"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
     depends_on:
-      - db-server
-      - consul
+      db-server:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
+
   web:
     build:
       context: ../../app-web
@@ -93,6 +149,9 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - authors
-      - books
-      - customers
+      authors:
+        condition: service_healthy
+      books:
+        condition: service_healthy
+      customers:
+        condition: service_healthy

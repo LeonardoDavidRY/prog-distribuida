@@ -39,6 +39,20 @@ management:
   endpoint:
     health:
       show-details: always
+      # Without this, Spring Boot only auto-creates the liveness/readiness
+      # health groups when it detects it's running inside Kubernetes. In plain
+      # Docker/docker-compose that autodetection never fires, so
+      # /actuator/health/liveness and /actuator/health/readiness return 404
+      # and the docker-compose healthcheck for this service never succeeds
+      # (which in turn blocks the "web" container from ever starting).
+      probes:
+        enabled: true
+      group:
+        readiness:
+          # DB connectivity belongs in readiness (equivalent to @Readiness in
+          # MicroProfile Health), not liveness: a DB hiccup should take this
+          # instance out of rotation, not get the container restarted.
+          include: readinessState,db,customerService
     prometheus:
       enabled: true
 
