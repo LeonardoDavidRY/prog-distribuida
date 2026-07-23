@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-todo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-todo
+  template:
+    metadata:
+      labels:
+        app: app-todo
+    spec:
+      containers:
+        - name: app-todo
+          image: leonardodavidry/app-todo:latest
+          ports:
+            - containerPort: 8080
+          env:
+            # Base propia de app-todo ("tododb", ver ConfigMap postgres-init-scripts en
+            # postgresql-deployment.yml), separada de "books-db": app-todo no depende
+            # de ningún otro módulo.
+            - name: QUARKUS_DATASOURCE_JDBC_URL
+              value: "jdbc:postgresql://postgres:5432/tododb"
+            - name: QUARKUS_DATASOURCE_USERNAME
+              value: "postgres"
+            - name: QUARKUS_DATASOURCE_PASSWORD
+              value: "labcom,2015"
+            - name: QUARKUS_HTTP_PORT
+              value: "8080"
+            - name: CONSUL_HOST
+              value: "consul"
+            - name: CONSUL_PORT
+              value: "8500"
+            - name: QUARKUS_FLYWAY_MIGRATE_AT_START
+              value: "true"
+            - name: QUARKUS_REST_CLIENT_USERRESTCLIENT_URL
+              value: "https://jsonplaceholder.typicode.com"
+            - name: QUARKUS_REST_CLIENT_TODOSOURCERESTCLIENT_URL
+              value: "https://jsonplaceholder.typicode.com"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-todo
+spec:
+  type: ClusterIP
+  selector:
+    app: app-todo
+  ports:
+    - port: 8080
+      targetPort: 8080
